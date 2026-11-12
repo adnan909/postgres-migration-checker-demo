@@ -1,0 +1,18 @@
+# Checks every pull request's changed migrations for statements that lock or
+# rewrite live tables, and comments with a safe version of each.
+# Free: https://github.com/marketplace/actions/postgres-migration-safety-check
+name: migration safety
+on:
+  pull_request:
+    paths: ['db/migrations/**/*.sql']
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write   # for the summary comment
+    steps:
+      - uses: actions/checkout@v4
+      - uses: adnan909/postgres-migration-checker@v1
+        with:
+          files: db/migrations/**/*.sql
